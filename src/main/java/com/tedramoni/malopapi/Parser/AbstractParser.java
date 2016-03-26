@@ -62,15 +62,15 @@ public abstract class AbstractParser {
     public Document getResultFromJSoup(String url) throws IOException {
         log.debug("Trying to get result from " + url);
 
-        try {
+        /*try {
             //delay between 0 and 5s
-            long delay = (0 + new Random().nextInt(5)) * 1000;
-            Integer seconds = (int) (delay / 1000) % 60;
+            //long delay = (0 + new Random().nextInt(5)) * 1000;
+            //Integer seconds = (int) (delay / 1000) % 60;*
             log.debug(String.format("Delay : %ss", seconds.toString()));
             Thread.sleep(delay);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
 
         final Connection.Response response = Jsoup.connect(url).userAgent(USER_AGENT).execute();
 

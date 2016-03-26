@@ -1,7 +1,5 @@
 package com.tedramoni.malopapi.Application;
 
-import com.tedramoni.malopapi.Controller.AnimeRessource;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,11 +25,12 @@ public class ApplicationConfig extends Application {
         //this will register Jackson JSON providers
         resources.add(org.glassfish.jersey.jackson.JacksonFeature.class);
         //we could also use this:
-        //resources.add(com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider.class);
+        resources.add(com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider.class);
 
         //instead let's do it manually:
         resources.add(com.tedramoni.malopapi.Provider.MyJacksonJsonProvider.class);
         resources.add(com.tedramoni.malopapi.Controller.AnimeRessource.class);
+        resources.add(com.tedramoni.malopapi.Controller.ApiRessource.class);
         //==> we could also choose packages, see below getProperties()
 
         System.out.println("REST configuration ended successfully.");
@@ -56,7 +55,7 @@ public class ApplicationConfig extends Application {
 
         //we could also use something like this instead of adding each of our resources
         //explicitly in getClasses():
-        //properties.put("jersey.config.server.provider.packages", "com.nabisoft.tutorials.mavenstruts.service");
+        //properties.put("jersey.config.server.provider.packages", "com.tedramoni.malopapi.Controller");
 
 
         return properties;

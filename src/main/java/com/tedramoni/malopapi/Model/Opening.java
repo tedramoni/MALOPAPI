@@ -1,6 +1,7 @@
 package com.tedramoni.malopapi.Model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,6 +10,7 @@ import java.util.regex.Pattern;
  * Created by Ted on 22/03/2016.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonRootName(value = "opening")
 public class Opening {
     private Integer id;
     private String title;

@@ -2,6 +2,7 @@ package com.tedramoni.malopapi.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,8 @@ import java.util.Random;
 /**
  * Created by Ted on 22/03/2016.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonRootName(value = "anime")
 public class Anime {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -49,6 +52,7 @@ public class Anime {
         return openings.get(index);
     }
 
+    @JsonIgnore
     public Opening getRandomOpening(){
         int index = random.nextInt(openings.size());
         return openings.get(index);
