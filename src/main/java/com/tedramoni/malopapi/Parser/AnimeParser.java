@@ -56,13 +56,16 @@ public class AnimeParser extends AbstractParser {
             log.debug("[myanimelist-api] Cannot parse main title", e);
         }
 
-        pattern = "EditOpening Theme";
+        pattern = "Edit Opening Theme";
 
         Elements h2s = doc.select("h2");
         for (Element h2 : h2s) {
             if (h2.text().equals(pattern)) {
-                log.debug("Openings have been found" );
-                anime = setOpenings(anime, h2);
+                Elements openings = doc.select("div.theme-songs.js-theme-songs.opnening");
+                if (openings != null && openings.hasText()) {
+                    log.debug("Openings have been found" );
+                    anime = setOpenings(anime, openings);
+                }
                 Elements moreOpenings = doc.select("div[id=opTheme]");
                 if (moreOpenings != null && moreOpenings.hasText()) {
                     log.debug("More Openings have been found" );
@@ -79,11 +82,15 @@ public class AnimeParser extends AbstractParser {
         return firstH1.childNodes().get(0).childNodes().get(0).toString();
     }
 
-    private Anime setOpenings(Anime anime, Element h2) {
-        Integer index = 1;
+    private Anime setOpenings(Anime anime, Elements text) {
+
+        // OLD MAL TEMPLATE FOR OPENING *DEPRECATED*
+        /*Integer index = 1;
         Node current = h2.nextSibling();
+        log.debug("NEXT SIBLING"+current.nextSibling().toString());
         do {
             String line = current.toString();
+            log.debug(line);
             if (line.contains("<br>" ) || index > 10 || line.equals(" " ) || line.isEmpty()) {
                 current = current.nextSibling();
             } else {
@@ -97,14 +104,45 @@ public class AnimeParser extends AbstractParser {
                 ++index;
                 current = current.nextSibling();
             }
-        } while (!current.toString().contains("h2" ));
+        } while (!current.toString().contains("h2" ));*/
+        Integer index = 1;
+        String divContent = text.toString();
+        String[] divContentCutted = divContent.split("#" );
+        if(divContentCutted.length==1){
+            divContentCutted = divContent.split("<span class=\"theme-song\">" );
+            for (String line : divContentCutted) {
+                if (line.contains("No opening themes have been added to this title. Help improve our database by adding an opening theme" )) {
+                    break;
+                }
+                if(line.contains("by") && index<=10){
+                    log.debug("title added :" + line.toString());
+                    Opening opening = new Opening(index);
+                    opening.setOpening(line);
+                    anime.addOpening(index, opening);
+                    ++index;
+                }
+            }
+        }
+        else{
+            for (String line : divContentCutted) {
+                if (line.contains("No opening themes have been added to this title. Help improve our database by adding an opening theme" )) {
+                    break;
+                }
+                if(line.contains(":") && index<=10){
+                    log.debug("title added :" + line.toString());
+                    Opening opening = new Opening(index);
+                    opening.setOpening(line);
+                    anime.addOpening(index, opening);
+                    ++index;
+                }
+            }
+        }
 
         return anime;
     }
 
     private Anime setMoreOpenings(Anime anime, Elements text) {
         Integer index = 11;
-        Anime animeWithMoreOpenings = anime;
         String divContent = text.text();
         String[] divContentCutted = divContent.split(" #" );
         for (String line : divContentCutted) {
@@ -113,9 +151,8 @@ public class AnimeParser extends AbstractParser {
             opening.setOpening(line);
             anime.addOpening(index, opening);
             ++index;
-
         }
-        return animeWithMoreOpenings;
+        return anime;
     }
 
     public void call() {

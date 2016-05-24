@@ -53,7 +53,10 @@ public class Opening {
                 '}';
     }
 
-    public void setOpening(String line){
+    public void setOpening(String text){
+        String line = text.replace("</span>\n" +
+                " <br>\n" +
+                "</div>","");
         Pattern patternTitre = Pattern.compile("\"(.*?)\"");
         Matcher matcherTitre = patternTitre.matcher(line);
         if (matcherTitre.find()) {
@@ -62,9 +65,12 @@ public class Opening {
 
         Pattern patternArtiste = Pattern.compile("by(.*?)\\(");
         Matcher matcherArtiste = patternArtiste.matcher(line);
-        if (matcherArtiste.find()) {
+        Pattern patternArtiste2 = Pattern.compile("by(.*?)</span>");
+        Matcher matcherArtiste2 = patternArtiste2.matcher(line);
+        if (matcherArtiste.find() || matcherArtiste2.find()) {
             this.setArtist(matcherArtiste.group(1).trim());
         }
+
         else{
             String[] cuttedByEspace = line.split(" by ");
             this.setArtist(cuttedByEspace[cuttedByEspace.length-1]);
